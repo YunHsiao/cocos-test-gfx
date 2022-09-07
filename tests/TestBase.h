@@ -1,6 +1,7 @@
 #pragma once
 
-#include "base/CoreStd.h"
+#include "core/Types.h"
+#include "base/StringUtil.h"
 #include "math/Mat4.h"
 #include "math/Vec4.h"
 #include "platform/Image.h"
@@ -10,6 +11,10 @@
 
 #include <algorithm>
 #include <iterator>
+
+using ccstd::string;
+using ccstd::vector;
+using ccstd::unordered_map;
 
 namespace tinyobj {
 class ObjReader;
@@ -24,11 +29,11 @@ using WindowInfo = struct WindowInfo {
 };
 
 struct StandardShaderSource {
-    String vert;
-    String frag;
+    string vert;
+    string frag;
 };
 
-using ComputeShaderSource = String;
+using ComputeShaderSource = string;
 
 template <typename T>
 struct ShaderSources {
@@ -87,16 +92,17 @@ struct FrameRate {
 
 #define DEFINE_CREATE_METHOD(className)          \
     static TestBaseI *create() {                 \
-        TestBaseI *instance = CC_NEW(className); \
+        TestBaseI *instance = ccnew(className);  \
         if (instance->initialize())              \
             return instance;                     \
-        CC_SAFE_DESTROY(instance);               \
+        CC_SAFE_DESTROY_AND_DELETE(instance);    \
         return nullptr;                          \
     }
 
-class TestBaseI : public cc::Object {
+class TestBaseI {
 public:
     TestBaseI();
+    virtual ~TestBaseI() = default;
 
     using createFunc = TestBaseI *(*)();
 
@@ -118,7 +124,7 @@ public:
 
         ++statistics->frameAcc;
     }
-    static void printTime(const FrameRate &statistics = logicThread, const String &prefix = "Logic thread") {
+    static void printTime(const FrameRate &statistics = logicThread, const string &prefix = "Logic thread") {
         if (statistics.frameAcc % 6 == 0) {
             CC_LOG_INFO("%s: frame %d, avg: %.2fms (~%ld FPS)",
                         prefix.c_str(),
@@ -140,12 +146,12 @@ public:
     static void onTouchEnd();
     static void update();
 
-    static void               evalString(const String &code);
-    static void               runScript(const String &file);
+    static void               evalString(const string &code);
+    static void               runScript(const string &file);
     static void               tickScript();
     static void               scriptEngineGC();
     static unsigned char *    rgb2rgba(Image *img);
-    static gfx::Texture *     createTextureWithFile(const gfx::TextureInfo &partialInfo, const String &imageFile);
+    static gfx::Texture *     createTextureWithFile(const gfx::TextureInfo &partialInfo, const string &imageFile);
     static void               modifyProjectionBasedOnDevice(Mat4 *projection, gfx::Swapchain *swapchain);
     static void               createOrthographic(float left, float right, float bottom, float top, float near, float zFar, Mat4 *dst, gfx::Swapchain *swapchain);
     static void               createPerspective(float fov, float aspect, float near, float zFar, Mat4 *dst, gfx::Swapchain *swapchain);
@@ -154,7 +160,7 @@ public:
     static uint               getUBOSize(uint size);
     static uint               getMipmapLevelCounts(uint width, uint height);
     static uint               getAlignedUBOStride(uint stride);
-    static tinyobj::ObjReader loadOBJ(const String &path);
+    static tinyobj::ObjReader loadOBJ(const string &path);
     static void               createUberBuffer(const vector<uint> &sizes, gfx::Buffer **pBuffer, vector<gfx::Buffer *> *pBufferViews,
                                                vector<uint> *pBufferViewOffsets, vector<uint> *pAlignedBufferSizes = nullptr, uint instances = 1);
 
@@ -223,7 +229,7 @@ public:
         onDestroy();
 
         for (auto *texture : _textures) {
-            CC_SAFE_DESTROY(texture)
+            CC_SAFE_DESTROY_AND_DELETE(texture)
         }
         _textures.clear();
     }

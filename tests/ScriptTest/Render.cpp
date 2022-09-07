@@ -94,11 +94,11 @@ struct MultisampledFramebuffer {
     }
 
     void destroy() {
-        CC_SAFE_DESTROY(framebuffer);
-        CC_SAFE_DESTROY(depthStencilTex);
-        CC_SAFE_DESTROY(colorTex);
-        CC_SAFE_DESTROY(colorTexMSAA);
-        CC_SAFE_DESTROY(renderPass);
+        CC_SAFE_DESTROY_AND_DELETE(framebuffer);
+        CC_SAFE_DESTROY_AND_DELETE(depthStencilTex);
+        CC_SAFE_DESTROY_AND_DELETE(colorTex);
+        CC_SAFE_DESTROY_AND_DELETE(colorTexMSAA);
+        CC_SAFE_DESTROY_AND_DELETE(renderPass);
     }
 
     gfx::RenderPass * renderPass{nullptr};
@@ -166,7 +166,7 @@ void Root::initialize() {
 
     gfx::Device *device = gfx::Device::getInstance();
 
-    msaaFBO = CC_NEW(MultisampledFramebuffer(device, swapchain));
+    msaaFBO = ccnew MultisampledFramebuffer(device, swapchain);
 
     fbo = OFFSCREEN_MSAA ? msaaFBO->framebuffer : onScreenFBO;
 
@@ -474,22 +474,22 @@ void Root::initialize() {
 }
 
 void Root::destroy() {
-    CC_SAFE_DESTROY(inputAssembler)
-    CC_SAFE_DESTROY(vertexBuffer)
-    CC_SAFE_DESTROY(instancedBuffer)
-    CC_SAFE_DESTROY(uniformBufferGlobal)
-    CC_SAFE_DESTROY(shader)
-    CC_SAFE_DESTROY(descriptorSet)
-    CC_SAFE_DESTROY(descriptorSetLayout)
-    CC_SAFE_DESTROY(pipelineLayout)
-    CC_SAFE_DESTROY(pipelineState)
+    CC_SAFE_DESTROY_AND_DELETE(inputAssembler)
+    CC_SAFE_DESTROY_AND_DELETE(vertexBuffer)
+    CC_SAFE_DESTROY_AND_DELETE(instancedBuffer)
+    CC_SAFE_DESTROY_AND_DELETE(uniformBufferGlobal)
+    CC_SAFE_DESTROY_AND_DELETE(shader)
+    CC_SAFE_DESTROY_AND_DELETE(descriptorSet)
+    CC_SAFE_DESTROY_AND_DELETE(descriptorSetLayout)
+    CC_SAFE_DESTROY_AND_DELETE(pipelineLayout)
+    CC_SAFE_DESTROY_AND_DELETE(pipelineState)
 
-    CC_SAFE_DESTROY(vertexBufferOutline)
-    CC_SAFE_DESTROY(pipelineStateOutline)
-    CC_SAFE_DESTROY(inputAssemblerOutline)
+    CC_SAFE_DESTROY_AND_DELETE(vertexBufferOutline)
+    CC_SAFE_DESTROY_AND_DELETE(pipelineStateOutline)
+    CC_SAFE_DESTROY_AND_DELETE(inputAssemblerOutline)
 
     fbo = nullptr;
-    CC_SAFE_DESTROY(msaaFBO)
+    CC_SAFE_DESTROY_AND_DELETE(msaaFBO)
     commandBuffers.clear();
 
     GeneralBarriers.clear();

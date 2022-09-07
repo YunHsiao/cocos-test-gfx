@@ -1,6 +1,5 @@
 #include "TestBase.h"
 
-#include "base/AutoreleasePool.h"
 #include "base/threading/MessageQueue.h"
 #include "platform/FileUtils.h"
 
@@ -145,21 +144,21 @@ void TestBaseI::tickScript() {
 }
 
 void TestBaseI::destroyGlobal() {
-    CC_SAFE_DESTROY(test)
+    CC_SAFE_DESTROY_AND_DELETE(test)
     framegraph::FrameGraph::gc(0);
 
     se::ScriptEngine::destroyInstance();
 
     for (auto *fbo : fbos) {
-        CC_SAFE_DESTROY(fbo)
+        CC_SAFE_DESTROY_AND_DELETE(fbo)
     }
-    CC_SAFE_DESTROY(renderPass)
+    CC_SAFE_DESTROY_AND_DELETE(renderPass)
 
     for (auto *swapchain : swapchains) {
-        CC_SAFE_DESTROY(swapchain)
+        CC_SAFE_DESTROY_AND_DELETE(swapchain)
     }
 
-    CC_SAFE_DESTROY(device)
+    CC_SAFE_DESTROY_AND_DELETE(device)
 }
 
 void TestBaseI::nextTest(bool backward) {
@@ -184,7 +183,7 @@ void TestBaseI::onTouchEnd() {
 
 void TestBaseI::update() {
     if (nextDirection) {
-        CC_SAFE_DESTROY(test)
+        CC_SAFE_DESTROY_AND_DELETE(test)
         static auto testCount = static_cast<int>(tests.size());
         if (nextDirection < 0) curTestIndex += testCount;
         curTestIndex  = (curTestIndex + nextDirection) % testCount;
@@ -196,12 +195,12 @@ void TestBaseI::update() {
     }
 }
 
-void TestBaseI::evalString(const String &code) {
+void TestBaseI::evalString(const string &code) {
     se::AutoHandleScope hs;
     se::ScriptEngine::getInstance()->evalString(code.c_str());
 }
 
-void TestBaseI::runScript(const String &file) {
+void TestBaseI::runScript(const string &file) {
     se::AutoHandleScope hs;
     se::ScriptEngine::getInstance()->runScript(file);
 }
@@ -219,7 +218,7 @@ void TestBaseI::scriptEngineGC() {
 unsigned char *TestBaseI::rgb2rgba(Image *img) {
     int                  size    = img->getWidth() * img->getHeight();
     const unsigned char *srcData = img->getData();
-    auto *               dstData = new unsigned char[size * 4];
+    auto *               dstData = ccnew unsigned char[size * 4];
     for (int i = 0; i < size; i++) {
         dstData[i * 4]     = srcData[i * 3];
         dstData[i * 4 + 1] = srcData[i * 3 + 1];
@@ -229,9 +228,8 @@ unsigned char *TestBaseI::rgb2rgba(Image *img) {
     return dstData;
 }
 
-gfx::Texture *TestBaseI::createTextureWithFile(const gfx::TextureInfo &partialInfo, const String &imageFile) {
-    auto *img = new cc::Image();
-    img->autorelease();
+gfx::Texture *TestBaseI::createTextureWithFile(const gfx::TextureInfo &partialInfo, const string &imageFile) {
+    auto *img = ccnew cc::Image();
     if (!img->initWithImageFile(imageFile)) return nullptr;
 
     unsigned char *imgData = nullptr;
@@ -255,6 +253,7 @@ gfx::Texture *TestBaseI::createTextureWithFile(const gfx::TextureInfo &partialIn
     textureRegion.texExtent.height = img->getHeight();
     device->copyBuffersToTexture({imgData}, texture, {textureRegion});
     delete[] imgData;
+    delete img;
     return texture;
 }
 
@@ -427,15 +426,15 @@ void TestBaseI::createUberBuffer(const vector<uint> &sizes, gfx::Buffer **pBuffe
     }
 }
 
-tinyobj::ObjReader TestBaseI::loadOBJ(const String & /*path*/) {
-    String objFile = FileUtils::getInstance()->getStringFromFile("bunny.obj");
-    String mtlFile;
+tinyobj::ObjReader TestBaseI::loadOBJ(const string & /*path*/) {
+    string objFile = FileUtils::getInstance()->getStringFromFile("bunny.obj");
+    string mtlFile;
 
     tinyobj::ObjReader       obj;
     tinyobj::ObjReaderConfig config;
     config.vertex_color = false;
     obj.ParseFromString(objFile, mtlFile, config);
-    CCASSERT(obj.Valid(), "file failed to load");
+    assert(obj.Valid(), "file failed to load");
 
     return obj;
 }

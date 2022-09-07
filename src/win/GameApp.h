@@ -3,9 +3,14 @@
 #include "tests/TestBase.h"
 #include <Windows.h>
 
-namespace cc {
+namespace se {
+class ScriptEngine;
+}
 
-class GameApp : public cc::Object {
+namespace cc {
+class FileUtils;
+
+class GameApp {
 public:
     static GameApp *getInstance() { return _instance; }
     GameApp();
@@ -24,6 +29,9 @@ private:
 
     bool _running = true;
     bool _paused = false;
+
+    se::ScriptEngine* _se = nullptr;
+    FileUtils* _fs = nullptr;
 
     HINSTANCE _hInstance = NULL;
 

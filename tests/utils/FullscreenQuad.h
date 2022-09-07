@@ -6,11 +6,10 @@
 
 namespace cc {
 
-class FullscreenQuad : public cc::Object {
+class FullscreenQuad {
 public:
     FullscreenQuad(gfx::Device *device, gfx::RenderPass *renderPass, gfx::Texture *texture);
-    ~FullscreenQuad() override;
-    CC_DISABLE_COPY_AND_MOVE_SEMANTICS(FullscreenQuad)
+    ~FullscreenQuad();
 
     void draw(gfx::CommandBuffer *commandBuffer);
 

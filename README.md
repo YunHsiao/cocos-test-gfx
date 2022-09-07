@@ -7,8 +7,8 @@ a light-weight repo used to test the feature of the _gfx_ module of cocos-creato
 _test_gfx_ should be put alongside the engine repo:
 
 <pre>
-├── cocos-engine (<a href="https://github.com/cocos/cocos-engine/tree/v3.5.0">3.5.0</a>)
-│   └── native/external (<a href="https://github.com/cocos/cocos-engine-external/tree/v3.5">3.5</a>)
+├── cocos-engine (<a href="https://github.com/cocos/cocos-engine/tree/v3.6.2">3.6.2</a>)
+│   └── native/external (<a href="https://github.com/cocos/cocos-engine-external/tree/v3.6.2">3.6.2</a>)
 └── test-gfx (<a href="https://github.com/cocos-creator/test-gfx/tree/master">master</a>)
 </pre>
 

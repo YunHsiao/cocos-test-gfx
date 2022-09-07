@@ -242,8 +242,8 @@ Root::Root() {
 }
 
 Root::~Root() {
-    CCASSERT(TransformView::views.empty(), "Resources leaked");
-    CCASSERT(ModelView::views.empty(), "Resources leaked");
+    assert(TransformView::views.empty(), "Resources leaked");
+    assert(ModelView::views.empty(), "Resources leaked");
 
     if (instance == this) {
         instance = nullptr;
@@ -255,7 +255,7 @@ TransformView *Root::createTransform() {
         TransformView::childrenBuffers.resize(TransformView::views.size() * 2);
         vmath::setSlices<true>(TransformView::buffer, TransformView::views.size() * 2);
     }
-    auto *res = CC_NEW(TransformView(TransformView::views.size()));
+    auto *res = ccnew TransformView(TransformView::views.size());
 
     TransformView::views.push_back(res);
     return res;
@@ -265,7 +265,7 @@ ModelView *Root::createModel() {
     if (ModelView::views.size() >= vmath::slices(ModelView::buffer)) {
         vmath::setSlices<true>(ModelView::buffer, ModelView::views.size() * 2);
     }
-    auto *res = CC_NEW(ModelView(ModelView::views.size()));
+    auto *res = ccnew ModelView(ModelView::views.size());
 
     ModelView::views.push_back(res);
     return res;
@@ -390,7 +390,7 @@ RootAgent::~RootAgent() {
 }
 
 void RootAgent::initialize() {
-    _mainMessageQueue = CC_NEW(MessageQueue);
+    _mainMessageQueue = ccnew(MessageQueue);
 
     setMultithreaded(true);
 
@@ -499,12 +499,12 @@ void RootAgent::setMultithreaded(bool multithreaded) {
 
 TransformView *RootAgent::createTransform() {
     auto *actor = _actor->createTransform();
-    return CC_NEW(TransformAgent(actor));
+    return ccnew TransformAgent(actor);
 }
 
 ModelView *RootAgent::createModel() {
     auto *actor = _actor->createModel();
-    return CC_NEW(ModelAgent(actor));
+    return ccnew ModelAgent(actor);
 }
 
 Root *RootManager::instance{nullptr};

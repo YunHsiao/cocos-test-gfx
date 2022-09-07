@@ -12,7 +12,7 @@ set(ALL_FILES
   ${SOURCE_C_FILES}
   )
 
-add_definitions("-DVK_NO_PROTOTYPES")
+add_definitions("-DVK_NO_PROTOTYPES -DCC_USE_VULKAN")
 
 if(WINDOWS)
 	add_definitions("-DVK_USE_PLATFORM_WIN32_KHR")

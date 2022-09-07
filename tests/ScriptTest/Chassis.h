@@ -10,6 +10,8 @@
 
 #include "../utils/Math.h"
 
+using ccstd::vector;
+
 namespace cc {
 
 class MessageQueue;
@@ -251,8 +253,8 @@ protected:
 class RootManager {
 public:
     static Root *create() {
-        Root *root = CC_NEW(Root);
-        root       = CC_NEW(RootAgent(root));
+        Root *root = ccnew(Root);
+        root       = ccnew RootAgent(root);
 
         root->initialize();
         instance = root;
@@ -261,7 +263,7 @@ public:
     }
 
     static void destroy() {
-        CC_SAFE_DESTROY(instance);
+        CC_SAFE_DESTROY_AND_DELETE(instance);
     }
 
     static Root *getInstance() { return instance; }

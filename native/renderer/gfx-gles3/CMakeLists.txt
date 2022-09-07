@@ -12,6 +12,8 @@ set(ALL_FILES
   ${SOURCE_C_FILES}
   )
 
+add_definitions("-DVK_NO_PROTOTYPES -DCC_USE_GLES3")
+
 if (COCOS_STATIC)
 	add_library(${TARGET_NAME} STATIC ${HEADER_FILES} ${ALL_FILES})
 else()

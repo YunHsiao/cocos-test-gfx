@@ -15,17 +15,17 @@ enum class PipelineType : uint8_t {
 } // namespace
 
 void StencilTest::onDestroy() {
-    CC_SAFE_DESTROY(_shader);
-    CC_SAFE_DESTROY(_vertexBuffer);
-    CC_SAFE_DESTROY(_inputAssembler);
+    CC_SAFE_DESTROY_AND_DELETE(_shader);
+    CC_SAFE_DESTROY_AND_DELETE(_vertexBuffer);
+    CC_SAFE_DESTROY_AND_DELETE(_inputAssembler);
     for (uint i = 0; i < BINDING_COUNT; i++) {
-        CC_SAFE_DESTROY(_uniformBuffer[i]);
-        CC_SAFE_DESTROY(_descriptorSet[i]);
+        CC_SAFE_DESTROY_AND_DELETE(_uniformBuffer[i]);
+        CC_SAFE_DESTROY_AND_DELETE(_descriptorSet[i]);
     }
-    CC_SAFE_DESTROY(_descriptorSetLayout);
-    CC_SAFE_DESTROY(_pipelineLayout);
+    CC_SAFE_DESTROY_AND_DELETE(_descriptorSetLayout);
+    CC_SAFE_DESTROY_AND_DELETE(_pipelineLayout);
     for (auto &i : _pipelineState) {
-        CC_SAFE_DESTROY(i);
+        CC_SAFE_DESTROY_AND_DELETE(i);
     }
 }
 
@@ -327,6 +327,8 @@ void StencilTest::createPipelineState() {
     _textureBarriers.push_back(device->getTextureBarrier({
         gfx::AccessFlagBit::TRANSFER_WRITE,
         gfx::AccessFlagBit::FRAGMENT_SHADER_READ_TEXTURE,
+        gfx::BarrierType::FULL,
+        0,1,0,1,
         false,
     }));
 
@@ -358,7 +360,7 @@ void StencilTest::onTick() {
     commandBuffer->begin();
 
     if (TestBaseI::MANUAL_BARRIER) {
-        commandBuffer->pipelineBarrier(_generalBarriers[generalBarrierIdx], _textureBarriers.data(), _textures.data(), textureBarriers);
+        commandBuffer->pipelineBarrier(_generalBarriers[generalBarrierIdx], nullptr, nullptr, 0, _textureBarriers.data(), _textures.data(), textureBarriers);
     }
 
     commandBuffer->beginRenderPass(fbo->getRenderPass(), fbo, renderArea, &clearColor, 1.0F, 0);

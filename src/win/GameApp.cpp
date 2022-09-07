@@ -1,5 +1,6 @@
 #include "GameApp.h"
 #include "platform/FileUtils.h"
+#include "bindings/jswrapper/SeApi.h"
 
 namespace cc {
 
@@ -13,6 +14,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 GameApp::GameApp() {
     _instance = this;
+    _fs = createFileUtils();
+    _se = ccnew se::ScriptEngine();
 
     TCHAR szRootPath[MAX_PATH];
     memset(szRootPath, 0, sizeof(szRootPath));
@@ -109,6 +112,9 @@ void GameApp::destroy() {
 
     _hInstance = NULL;
     _instance  = nullptr;
+
+    delete _fs;
+    delete _se;
 }
 
 void GameApp::Run() {

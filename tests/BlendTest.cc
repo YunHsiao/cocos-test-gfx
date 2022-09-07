@@ -12,7 +12,7 @@ enum {
     TOTAL_BLEND
 };
 
-struct Quad : public cc::Object {
+struct Quad {
     Quad(gfx::Device *device, gfx::Framebuffer *fbo) : device(device), fbo(fbo) {
         createShader();
         createVertexBuffer();
@@ -21,21 +21,19 @@ struct Quad : public cc::Object {
         createPipeline();
     }
 
-    ~Quad() override = default;
-
     void destroy() {
-        CC_SAFE_DESTROY(shader);
-        CC_SAFE_DESTROY(vertexBuffer);
-        CC_SAFE_DESTROY(inputAssembler);
-        CC_SAFE_DESTROY(indexBuffer);
-        CC_SAFE_DESTROY(texture);
-        CC_SAFE_DESTROY(descriptorSet);
-        CC_SAFE_DESTROY(uniformBufferView);
-        CC_SAFE_DESTROY(uniformBuffer);
-        CC_SAFE_DESTROY(descriptorSetLayout);
-        CC_SAFE_DESTROY(pipelineLayout);
+        CC_SAFE_DESTROY_AND_DELETE(shader);
+        CC_SAFE_DESTROY_AND_DELETE(vertexBuffer);
+        CC_SAFE_DESTROY_AND_DELETE(inputAssembler);
+        CC_SAFE_DESTROY_AND_DELETE(indexBuffer);
+        CC_SAFE_DESTROY_AND_DELETE(texture);
+        CC_SAFE_DESTROY_AND_DELETE(descriptorSet);
+        CC_SAFE_DESTROY_AND_DELETE(uniformBufferView);
+        CC_SAFE_DESTROY_AND_DELETE(uniformBuffer);
+        CC_SAFE_DESTROY_AND_DELETE(descriptorSetLayout);
+        CC_SAFE_DESTROY_AND_DELETE(pipelineLayout);
         for (auto &i : pipelineState) {
-            CC_SAFE_DESTROY(i);
+            CC_SAFE_DESTROY_AND_DELETE(i);
         }
     }
 
@@ -332,7 +330,7 @@ struct Quad : public cc::Object {
     uint          uboStride;
 };
 
-struct BigTriangle : public cc::Object {
+struct BigTriangle {
     BigTriangle(gfx::Device *device, gfx::Framebuffer *fbo) : device(device), fbo(fbo) {
         createShader();
         createVertexBuffer();
@@ -342,15 +340,15 @@ struct BigTriangle : public cc::Object {
     }
 
     void destroy() {
-        CC_SAFE_DESTROY(shader);
-        CC_SAFE_DESTROY(vertexBuffer);
-        CC_SAFE_DESTROY(inputAssembler);
-        CC_SAFE_DESTROY(descriptorSet);
-        CC_SAFE_DESTROY(descriptorSetLayout);
-        CC_SAFE_DESTROY(pipelineLayout);
-        CC_SAFE_DESTROY(pipelineState);
-        CC_SAFE_DESTROY(timeBuffer);
-        CC_SAFE_DESTROY(texture);
+        CC_SAFE_DESTROY_AND_DELETE(shader);
+        CC_SAFE_DESTROY_AND_DELETE(vertexBuffer);
+        CC_SAFE_DESTROY_AND_DELETE(inputAssembler);
+        CC_SAFE_DESTROY_AND_DELETE(descriptorSet);
+        CC_SAFE_DESTROY_AND_DELETE(descriptorSetLayout);
+        CC_SAFE_DESTROY_AND_DELETE(pipelineLayout);
+        CC_SAFE_DESTROY_AND_DELETE(pipelineState);
+        CC_SAFE_DESTROY_AND_DELETE(timeBuffer);
+        CC_SAFE_DESTROY_AND_DELETE(texture);
     }
 
     void createShader() {
@@ -556,8 +554,8 @@ gfx::Rect             renderArea;
 
 void BlendTest::onDestroy() {
     _textures.clear();
-    CC_SAFE_DESTROY(bigTriangle);
-    CC_SAFE_DESTROY(quad);
+    CC_SAFE_DESTROY_AND_DELETE(bigTriangle);
+    CC_SAFE_DESTROY_AND_DELETE(quad);
     renderArea.width = renderArea.height = 1U;
     orientation                          = gfx::SurfaceTransform::IDENTITY;
 }
@@ -565,8 +563,8 @@ void BlendTest::onDestroy() {
 bool BlendTest::onInit() {
     auto *fbo = fbos[0];
 
-    bigTriangle = CC_NEW(BigTriangle(device, fbo));
-    quad        = CC_NEW(Quad(device, fbo));
+    bigTriangle = ccnew BigTriangle(device, fbo);
+    quad        = ccnew Quad(device, fbo);
 
     _generalBarriers.push_back(device->getGeneralBarrier({
         gfx::AccessFlagBit::TRANSFER_WRITE,
@@ -585,6 +583,8 @@ bool BlendTest::onInit() {
     _textureBarriers.push_back(device->getTextureBarrier({
         gfx::AccessFlagBit::TRANSFER_WRITE,
         gfx::AccessFlagBit::FRAGMENT_SHADER_READ_TEXTURE,
+        gfx::BarrierType::FULL,
+        0,1,0,1,
         false,
     }));
 
@@ -639,7 +639,7 @@ void BlendTest::onTick() {
     }
 
     if (TestBaseI::MANUAL_BARRIER) {
-        commandBuffer->pipelineBarrier(_generalBarriers[generalBarrierIdx], _textureBarriers.data(), _textures.data(), textureBarriers);
+        commandBuffer->pipelineBarrier(_generalBarriers[generalBarrierIdx], nullptr, nullptr, 0, _textureBarriers.data(), _textures.data(), textureBarriers);
     }
 
     commandBuffer->beginRenderPass(fbo->getRenderPass(), fbo, renderArea, &clearColor, 1.0F, 0);

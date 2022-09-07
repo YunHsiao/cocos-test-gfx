@@ -147,7 +147,7 @@ endmacro(use_precompiled_header)
 
 set(USE_SE_V8 ON)
 set(USE_V8_DEBUGGER ON)
-add_definitions("-DUSE_JOB_SYSTEM_TASKFLOW")
+add_definitions("-DUSE_JOB_SYSTEM_TASKFLOW -D_USE_MATH_DEFINES -DCC_USE_WEBP")
 
 include(${COCOS_EXTERNAL_PATH}/CMakeLists.txt)
 list(REMOVE_ITEM CC_EXTERNAL_LIBS "glfw3")
@@ -158,6 +158,7 @@ set(GFX_INCLUDE_FILES
   ${COCOS_2dx_LITE_PATH}
   ${COCOS_SRC_PATH}
   ${COCOS_SRC_PATH}/renderer
+  ${COCOS_SRC_PATH}/bindings/jswrapper
   ${COCOS_ROOT_PATH}
   ${CC_EXTERNAL_INCLUDES}
   ${CC_EXTERNAL_PRIVATE_INCLUDES}

@@ -37,8 +37,6 @@ set(PLATFORM_SUPPORT_SOURCE
   ${COCOS_SRC_PATH}/platform/interfaces/modules/IVibrator.h
   ${COCOS_SRC_PATH}/platform/interfaces/OSInterface.cpp
   ${COCOS_SRC_PATH}/platform/interfaces/OSInterface.h
-  ${COCOS_SRC_PATH}/platform/interfaces/OSInterfaceManager.cpp
-  ${COCOS_SRC_PATH}/platform/interfaces/OSInterfaceManager.h
   ${COCOS_SRC_PATH}/application/ApplicationManager.h
   ${COCOS_SRC_PATH}/application/ApplicationManager.cpp
   ${COCOS_ROOT_PATH}/src/MainHack.cpp

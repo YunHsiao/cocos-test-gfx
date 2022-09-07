@@ -20,7 +20,7 @@ gfx::DescriptorSetLayoutInfo descriptorSetLayoutInfo{
     },
 };
 
-String standardStruct = R"(
+string standardStruct = R"(
     struct StandardSurface {
         vec4 albedo;
         vec3 position;
@@ -32,7 +32,7 @@ String standardStruct = R"(
     };
 )";
 
-String standardShading = R"(
+string standardShading = R"(
     #define PI 3.14159265359
 
     float GGXMobile (float roughness, float NoH, vec3 H, vec3 N) {
@@ -108,7 +108,7 @@ String standardShading = R"(
     }
 )";
 
-ShaderSources<String> cameraUBO = {
+ShaderSources<string> cameraUBO = {
     R"(
         layout(set = 0, binding = 0) uniform CCCamera {
             vec4 cc_cameraPos; // xyz: camera position, w: lighting UV tiling x
@@ -149,7 +149,7 @@ gfx::UniformBlock cameraUBOInfo{
     1,
 };
 
-ShaderSources<String> fragBase{
+ShaderSources<string> fragBase{
     R"(
         precision highp float;
 
@@ -180,7 +180,7 @@ ShaderSources<String> fragBase{
     )",
 };
 
-String surf = R"(
+string surf = R"(
     void surf (out StandardSurface s) {
         s.albedo = u_color;
         s.position = v_position;
@@ -192,14 +192,14 @@ String surf = R"(
     }
 )";
 
-String extensions = R"(
+string extensions = R"(
     #if CC_DEVICE_CAN_BENEFIT_FROM_INPUT_ATTACHMENT
         #extension GL_EXT_shader_framebuffer_fetch: require
     #endif
 )";
 } // namespace
 
-String getInputAttachmentMacro(gfx::Device *device) {
+string getInputAttachmentMacro(gfx::Device *device) {
     return StringUtil::format(
         R"(
             #define CC_DEVICE_CAN_BENEFIT_FROM_INPUT_ATTACHMENT %d
@@ -208,7 +208,7 @@ String getInputAttachmentMacro(gfx::Device *device) {
 }
 
 gfx::ShaderInfo getForwardShaderInfo() {
-    String vertMain = R"(
+    string vertMain = R"(
         void main () {
             vec4 pos = u_model * vec4(a_position, 1.0);
             v_position = pos.xyz;
@@ -218,7 +218,7 @@ gfx::ShaderInfo getForwardShaderInfo() {
         }
     )";
 
-    ShaderSources<String> vert;
+    ShaderSources<string> vert;
     vert.glsl4 = R"(
         precision highp float;
 
@@ -253,7 +253,7 @@ gfx::ShaderInfo getForwardShaderInfo() {
         varying vec3 v_normal;
     )" + vertMain;
 
-    ShaderSources<String> forwardFrag = fragBase + cameraUBO + standardStruct + standardShading + surf;
+    ShaderSources<string> forwardFrag = fragBase + cameraUBO + standardStruct + standardShading + surf;
     forwardFrag.glsl4 += R"(
         layout(location = 0) out vec4 o_color;
         void main () {
@@ -316,7 +316,7 @@ void createStandardShader(gfx::Device *device, StandardForwardPipeline *out) {
 void createStandardShader(gfx::Device *device, StandardDeferredPipeline *out) {
     gfx::ShaderInfo shaderInfo = getForwardShaderInfo();
 
-    ShaderSources<String> gbufferFrag = fragBase + cameraUBO + standardStruct + surf;
+    ShaderSources<string> gbufferFrag = fragBase + cameraUBO + standardStruct + surf;
     gbufferFrag.glsl4 += R"(
         layout(location = 0) out vec4 o_color0;
         layout(location = 1) out vec4 o_color1;
@@ -366,7 +366,7 @@ void createStandardShader(gfx::Device *device, StandardDeferredPipeline *out) {
     shaderInfo.stages[1].source = TestBaseI::getAppropriateShaderSource(gbufferFrag);
     out->gbufferShader.reset(device->createShader(shaderInfo));
 
-    ShaderSources<String> lightingVert = {
+    ShaderSources<string> lightingVert = {
         R"(
             precision highp float;
             layout(location = 0) in vec2 a_position;
@@ -395,7 +395,7 @@ void createStandardShader(gfx::Device *device, StandardDeferredPipeline *out) {
     )";
     auto lightingFrag =
         getInputAttachmentMacro(device) +
-        ShaderSources<String>{
+        ShaderSources<string>{
             R"(
             precision highp float;
             layout(location = 0) in vec2 v_texCoord;

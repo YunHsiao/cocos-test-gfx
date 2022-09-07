@@ -14,8 +14,8 @@ file(GLOB_RECURSE V8_SOURCE_C_FILES ${CURRENT_DIR}/v8/*.c)
 set(GENERAL_FILES
   ${COCOS_SRC_PATH}/bindings/manual/jsb_classtype.cpp
   ${COCOS_SRC_PATH}/bindings/manual/jsb_classtype.h
-  ${COCOS_SRC_PATH}/bindings/manual/jsb_conversions.cpp
-  ${COCOS_SRC_PATH}/bindings/manual/jsb_conversions.h
+  ${COCOS_SRC_PATH}/bindings/manual/jsb_conversions_spec.cpp
+  ${COCOS_SRC_PATH}/bindings/manual/jsb_conversions_spec.h
   ${COCOS_SRC_PATH}/bindings/manual/jsb_helper.cpp
   ${COCOS_SRC_PATH}/bindings/manual/jsb_helper.h
   ${COCOS_SRC_PATH}/bindings/manual/jsb_global_init.cpp
@@ -38,11 +38,13 @@ set(GENERAL_FILES
   ${COCOS_SRC_PATH}/bindings/event/CustomEventTypes.h
   ${COCOS_SRC_PATH}/bindings/event/EventDispatcher.cpp
   ${COCOS_SRC_PATH}/bindings/event/EventDispatcher.h
+
+  ${COCOS_SRC_PATH}/plugins/bus/EventBus.cpp
 )
 
 if(WINDOWS)
   set(PLATFORM_SPECIFIC_FILES
-    ${COCOS_SRC_PATH}/bindings/manual/jsb_platfrom_win32.cpp
+    ${COCOS_SRC_PATH}/bindings/manual/jsb_platform_win32.cpp
   )
 elseif(ANDROID)
   set(PLATFORM_SPECIFIC_FILES
